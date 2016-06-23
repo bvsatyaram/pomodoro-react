@@ -21673,16 +21673,11 @@ var Circle = Progress.Circle;
 var Tasks = React.createClass({
   displayName: 'Tasks',
 
-  colors: {
-    green: '#27ae60',
-    blue: '#2980b9',
-    orange: '#d35400',
-    red: '#c0392b'
-  },
-  totalTime: 1 * 60,
+  colors: ['#27ae60', '#2980b9', '#d35400', '#c0392b'],
+  totalTime: 1 * 60 * 1000,
   mixins: [Reflux.listenTo(TaskStore, 'handleCurrentTaskChange')],
   getInitialState: function () {
-    return { currentTaskId: null, currentTaskTitle: null, time: 0, percent: 0, progressColor: '#27ae60' };
+    return { currentTaskId: null, currentTaskTitle: null, time: 0, percent: 0, progressColor: this.colors[0] };
   },
   handleCurrentTaskChange: function (event, task) {
     if (event == 'currentTaskChange') {
@@ -21691,43 +21686,36 @@ var Tasks = React.createClass({
   },
   runTimer: function () {
     var time = this.state.time + 5;
-    if (time > totalTime) {
+    if (time > self.totalTime) {
       this.stopTimer();
     } else {
-      var percent = 100 * time / this.totalTime;
-      var color = null;
-      if (percent < 25) {
-        color = this.colors.green;
-      } else if (percent < 50) {
-        color = this.colors.blue;
-      } else if (percent < 75) {
-        color = this.colors.orange;
-      } else {
-        color = this.colors.red;
+      var percent = parseInt(100 * time / this.totalTime);
+      if (percent > 99) {
+        percent = 99;
       }
+      var color = this.colors[parseInt(percent / 25)];
 
       this.setState({ time: time, percent: percent, progressColor: color });
     }
   },
   startTimer: function () {
+    if (this.timer) {
+      this.stopTimer();
+    }
     this.timer = setInterval(this.runTimer, 5);
   },
   stopTimer: function () {
     if (this.timer) {
       clearInterval(this.timer);
-      this.setState({ time: 0, percent: 0, progressColor: '#27ae60' });
+      this.setState({ time: 0, percent: 0, progressColor: this.colors[0] });
     }
   },
   render: function () {
-    setInterval(function () {
-      this.setState({ time: this.state.time + 1 });
-    }.bind(this), 300);
-
     var content = React.createElement('div', null);
     if (this.state.currentTaskId) {
       content = React.createElement(
         'div',
-        null,
+        { className: 'timer-container' },
         React.createElement(Circle, { percent: this.state.percent, strokeWidth: '4', strokeColor: this.state.progressColor }),
         React.createElement(
           'button',
@@ -21751,7 +21739,7 @@ var Tasks = React.createClass({
         this.state.currentTaskTitle
       ),
       React.createElement(
-        'p',
+        'div',
         null,
         content
       )

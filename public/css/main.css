@@ -49,3 +49,8 @@ body {
   font-weight: 300;
   font-size: 3em;
   text-align: center; }
+
+#timer .timer-container {
+  width: 50%;
+  margin: 0 auto;
+  text-align: center; }
