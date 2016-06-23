@@ -3,14 +3,14 @@ var Reflux = require('reflux');
 var TaskStore = require('../dataStores/tasks.jsx');
 var Progress = require('rc-progress');
 var Circle = Progress.Circle;
-
+var totalTime = 1*60*1000;
+var timeIncrement = 600;
+var colors = ['#27ae60', '#2980b9', '#f39c12', '#d35400', '#c0392b'];
 
 var Tasks = React.createClass({
-  colors: ['#27ae60', '#2980b9', '#d35400', '#c0392b'],
-  totalTime: (1*60*1000),
   mixins: [Reflux.listenTo(TaskStore, 'handleCurrentTaskChange')],
   getInitialState: function() {
-    return {currentTaskId: null, currentTaskTitle: null, time: 0, percent: 0, progressColor: this.colors[0]};
+    return {currentTaskId: null, currentTaskTitle: null, time: 0, percent: 0, progressColor: colors[0]};
   },
   handleCurrentTaskChange: function(event, task) {
     if (event == 'currentTaskChange') {
@@ -18,15 +18,15 @@ var Tasks = React.createClass({
     }
   },
   runTimer: function() {
-    var time = this.state.time + 5;
-    if (time > self.totalTime) {
+    var time = this.state.time + timeIncrement;
+    if (time > totalTime) {
       this.stopTimer();
     } else {
-      var percent = parseInt(100*time/this.totalTime);
+      var percent = parseInt(100*time/totalTime);
       if (percent > 99) {
         percent = 99;
       }
-      var color = this.colors[parseInt(percent/25)];
+      var color = colors[parseInt(percent/20)];
 
       this.setState({time: time, percent: percent, progressColor: color});
     }
@@ -35,12 +35,12 @@ var Tasks = React.createClass({
     if (this.timer) {
       this.stopTimer();
     }
-    this.timer = setInterval(this.runTimer, 5);
+    this.timer = setInterval(this.runTimer, timeIncrement);
   },
   stopTimer: function() {
     if (this.timer) {
       clearInterval(this.timer);
-      this.setState({time: 0, percent: 0, progressColor: this.colors[0]})
+      this.setState({time: 0, percent: 0, progressColor: colors[0]})
     }
   },
   render: function() {
