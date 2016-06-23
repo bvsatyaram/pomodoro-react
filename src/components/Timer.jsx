@@ -49,8 +49,10 @@ var Tasks = React.createClass({
       content = (
         <div className="timer-container">
           <Circle percent={this.state.percent} strokeWidth="4" strokeColor={this.state.progressColor} />
-          <button onClick={this.startTimer}>Start Timer</button>
-          <button onClick={this.stopTimer}>Stop Timer</button>
+          <div className="button-container">
+            <button onClick={this.startTimer} className="btn btn-lg start">Start Timer</button>
+            <button onClick={this.stopTimer} className="btn btn-lg stop">Stop Timer</button>
+          </div>
         </div>
       )
     }

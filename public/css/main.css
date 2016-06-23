@@ -1,6 +1,15 @@
 body {
   font-family: 'Lato', sans-serif; }
 
+header nav.navbar {
+  background: #2c3e50;
+  height: 6em; }
+  header nav.navbar a.navbar-brand {
+    color: #ecf0f1;
+    font-size: 2em;
+    font-weight: 300;
+    line-height: 2em; }
+
 #tasks {
   border: 1px solid #bdc3c7;
   background-color: #16a085;
@@ -54,3 +63,13 @@ body {
   width: 50%;
   margin: 0 auto;
   text-align: center; }
+
+#timer .button-container {
+  margin-top: 1em; }
+  #timer .button-container button {
+    color: #ecf0f1;
+    border-radius: 0; }
+    #timer .button-container button.start {
+      background-color: #16a085; }
+    #timer .button-container button.stop {
+      background-color: #c0392b; }

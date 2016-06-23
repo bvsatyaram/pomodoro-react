@@ -21718,14 +21718,18 @@ var Tasks = React.createClass({
         { className: 'timer-container' },
         React.createElement(Circle, { percent: this.state.percent, strokeWidth: '4', strokeColor: this.state.progressColor }),
         React.createElement(
-          'button',
-          { onClick: this.startTimer },
-          'Start Timer'
-        ),
-        React.createElement(
-          'button',
-          { onClick: this.stopTimer },
-          'Stop Timer'
+          'div',
+          { className: 'button-container' },
+          React.createElement(
+            'button',
+            { onClick: this.startTimer, className: 'btn btn-lg start' },
+            'Start Timer'
+          ),
+          React.createElement(
+            'button',
+            { onClick: this.stopTimer, className: 'btn btn-lg stop' },
+            'Stop Timer'
+          )
         )
       );
     }

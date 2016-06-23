@@ -10,4 +10,21 @@
     margin: 0 auto;
     text-align: center;
   }
+
+  .button-container {
+    margin-top: 1em;
+
+    button {
+      color: #ecf0f1;
+      border-radius: 0;
+
+      &.start {
+        background-color: #16a085;
+      }
+
+      &.stop {
+        background-color: #c0392b;
+      }
+    }
+  }
 }
