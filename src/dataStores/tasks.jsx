@@ -10,7 +10,21 @@ var TaskStore = Reflux.createStore({
       this.fireUpdate();
     }.bind(this));
   },
-  postTasks: function(title) {},
+  postTask: function(title) {
+    if (!this.tasks) {
+      this.tasks = [];
+    }
+    var task = {
+      id: Date.now(),
+      title: title
+    };
+    this.tasks.push(task);
+    this.fireUpdate();
+
+    HTTP.post('/tasks', task).then(function(response) {
+      this.getTasks();
+    }.bind(this));
+  },
   fireUpdate: function() {
     this.trigger('change', this.tasks);
   }

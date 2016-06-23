@@ -21508,13 +21508,23 @@ var Tasks = React.createClass({
 
   mixins: [Reflux.listenTo(TaskStore, 'handleTaskStoreChange')],
   getInitialState: function () {
-    return { tasks: [] };
+    return { tasks: [], newTaskTitle: "" };
   },
   componentWillMount: function () {
     TaskActions.getTasks();
   },
   handleTaskStoreChange: function (event, tasks) {
     this.setState({ tasks: tasks });
+  },
+  handleNewTaskChange: function (e) {
+    this.setState({ newTaskTitle: e.target.value });
+  },
+  handleAddTask: function (e) {
+    e.preventDefault();
+    if (this.state.newTaskTitle) {
+      TaskActions.postTask(this.state.newTaskTitle);
+    }
+    this.setState({ newTaskTitle: "" });
   },
   render: function () {
     var taskElements = this.state.tasks.map(function (item) {
@@ -21524,7 +21534,21 @@ var Tasks = React.createClass({
     return React.createElement(
       'div',
       null,
-      taskElements
+      taskElements,
+      React.createElement(
+        'form',
+        { className: 'form-inline new-task-form' },
+        React.createElement(
+          'div',
+          { className: 'form-group' },
+          React.createElement('input', { type: 'text', className: 'form-control', placeholder: 'New Task Title', value: this.state.newTaskTitle, onChange: this.handleNewTaskChange })
+        ),
+        React.createElement(
+          'button',
+          { className: 'btn btn-default', onClick: this.handleAddTask },
+          'Add'
+        )
+      )
     );
   }
 });
@@ -21544,7 +21568,21 @@ var TaskStore = Reflux.createStore({
       this.fireUpdate();
     }.bind(this));
   },
-  postTasks: function (title) {},
+  postTask: function (title) {
+    if (!this.tasks) {
+      this.tasks = [];
+    }
+    var task = {
+      id: Date.now(),
+      title: title
+    };
+    this.tasks.push(task);
+    this.fireUpdate();
+
+    HTTP.post('/tasks', task).then(function (response) {
+      this.getTasks();
+    }.bind(this));
+  },
   fireUpdate: function () {
     this.trigger('change', this.tasks);
   }
@@ -21567,6 +21605,18 @@ var HTTP = {
   get: function (url) {
     return fetch(baseUrl + url).then(function (response) {
       return response.json();
+    });
+  },
+  post: function (url, data) {
+    return fetch(baseUrl + url, {
+      headers: {
+        'Accept': 'text/plain',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(data)
+    }).then(function (response) {
+      return response;
     });
   }
 };

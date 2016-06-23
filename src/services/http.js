@@ -6,6 +6,18 @@ var HTTP = {
     return fetch(baseUrl + url).then(function(response) {
       return response.json();
     });
+  },
+  post: function(url, data) {
+    return fetch(baseUrl + url, {
+      headers: {
+        'Accept': 'text/plain',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(data)
+    }).then(function(response) {
+      return response;
+    });
   }
 };
 
