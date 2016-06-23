@@ -18,6 +18,15 @@ var HTTP = {
     }).then(function(response) {
       return response;
     });
+  },
+  delete: function(url) {
+    return fetch(baseUrl + url, {
+      headers: {
+        'Accept': 'text/plain',
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE'
+    })
   }
 };
 

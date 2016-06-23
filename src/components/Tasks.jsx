@@ -28,7 +28,7 @@ var Tasks = React.createClass({
   },
   render: function() {
     var taskElements = this.state.tasks.map(function(item) {
-      return <Task key={item.id} title={item.title} />;
+      return <Task key={item.id} title={item.title} objId={item.id} />;
     });
 
     return (

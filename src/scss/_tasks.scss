@@ -6,10 +6,30 @@
   .task {
     background-color: #ecf0f1;
     color: #95a5a6;
-    padding: 0.5em 1em;
+    padding: 0.5em 0 0.5em 1em;
     font-size: 2em;
     font-weight: 300;
     border-bottom: 1px dotted #95a5a6;
+    position: relative;
+
+    .trash {
+      background-color: #e74c3c;
+      color: #ecf0f1;
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      padding: 0.8em 0.6em;
+      opacity: 0;
+      cursor: pointer;
+      transition: opacity 0.3s ease-in;
+    }
+
+    &:hover {
+      .trash {
+        opacity: 1;
+      }
+    }
   }
 
   form.new-task-form {

@@ -21476,19 +21476,25 @@ module.exports = function(listenables){
 },{}],188:[function(require,module,exports){
 var Reflux = require('reflux');
 
-var TaskActions = Reflux.createActions(['getTasks', 'postTask']);
+var TaskActions = Reflux.createActions(['getTasks', 'postTask', 'deleteTask']);
 
 module.exports = TaskActions;
 
 },{"reflux":184}],189:[function(require,module,exports){
 var React = require('react');
-var Task = React.createClass({
-  displayName: "Task",
+var TaskActions = require('../actions/task.jsx');
 
+var Task = React.createClass({
+  displayName: 'Task',
+
+  deleteTask: function () {
+    TaskActions.deleteTask(this.props.objId);
+  },
   render: function () {
     return React.createElement(
-      "div",
-      { className: "task" },
+      'div',
+      { className: 'task' },
+      React.createElement('span', { className: 'glyphicon glyphicon-trash trash', onClick: this.deleteTask }),
       this.props.title
     );
   }
@@ -21496,7 +21502,7 @@ var Task = React.createClass({
 
 module.exports = Task;
 
-},{"react":168}],190:[function(require,module,exports){
+},{"../actions/task.jsx":188,"react":168}],190:[function(require,module,exports){
 var React = require('react');
 var Task = require('./Task.jsx');
 var Reflux = require('reflux');
@@ -21528,7 +21534,7 @@ var Tasks = React.createClass({
   },
   render: function () {
     var taskElements = this.state.tasks.map(function (item) {
-      return React.createElement(Task, { key: item.id, title: item.title });
+      return React.createElement(Task, { key: item.id, title: item.title, objId: item.id });
     });
 
     return React.createElement(
@@ -21583,6 +21589,20 @@ var TaskStore = Reflux.createStore({
       this.getTasks();
     }.bind(this));
   },
+  deleteTask: function (taskId) {
+    var newTasks = [];
+    this.tasks.forEach(function (task) {
+      if (task.id != taskId) {
+        newTasks.push(task);
+      }
+    });
+    this.tasks = newTasks;
+    this.fireUpdate();
+
+    HTTP.delete('/tasks/' + taskId).then(function (response) {
+      this.getTasks();
+    }.bind(this));
+  },
   fireUpdate: function () {
     this.trigger('change', this.tasks);
   }
@@ -21617,6 +21637,15 @@ var HTTP = {
       body: JSON.stringify(data)
     }).then(function (response) {
       return response;
+    });
+  },
+  delete: function (url) {
+    return fetch(baseUrl + url, {
+      headers: {
+        'Accept': 'text/plain',
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE'
     });
   }
 };
