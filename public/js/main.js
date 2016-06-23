@@ -21476,7 +21476,7 @@ module.exports = function(listenables){
 },{}],188:[function(require,module,exports){
 var Reflux = require('reflux');
 
-var TaskActions = Reflux.createActions(['getTasks', 'postTask', 'deleteTask']);
+var TaskActions = Reflux.createActions(['getTasks', 'postTask', 'selectTask', 'deleteTask']);
 
 module.exports = TaskActions;
 
@@ -21490,10 +21490,13 @@ var Task = React.createClass({
   deleteTask: function () {
     TaskActions.deleteTask(this.props.objId);
   },
+  selectTask: function () {
+    TaskActions.selectTask(this.props.objId);
+  },
   render: function () {
     return React.createElement(
       'div',
-      { className: 'task' },
+      { className: 'task', onClick: this.selectTask },
       React.createElement('span', { className: 'glyphicon glyphicon-trash trash', onClick: this.deleteTask }),
       this.props.title
     );
@@ -21520,7 +21523,9 @@ var Tasks = React.createClass({
     TaskActions.getTasks();
   },
   handleTaskStoreChange: function (event, tasks) {
-    this.setState({ tasks: tasks });
+    if (event == 'coreChange') {
+      this.setState({ tasks: tasks });
+    }
   },
   handleNewTaskChange: function (e) {
     this.setState({ newTaskTitle: e.target.value });
@@ -21561,7 +21566,39 @@ var Tasks = React.createClass({
 
 module.exports = Tasks;
 
-},{"../actions/task.jsx":188,"../dataStores/tasks.jsx":191,"./Task.jsx":189,"react":168,"reflux":184}],191:[function(require,module,exports){
+},{"../actions/task.jsx":188,"../dataStores/tasks.jsx":192,"./Task.jsx":189,"react":168,"reflux":184}],191:[function(require,module,exports){
+var React = require('react');
+var Reflux = require('reflux');
+var TaskStore = require('../dataStores/tasks.jsx');
+
+var Tasks = React.createClass({
+  displayName: 'Tasks',
+
+  mixins: [Reflux.listenTo(TaskStore, 'handleCurrentTaskChange')],
+  getInitialState: function () {
+    return { currentTaskId: null, currentTaskTitle: null };
+  },
+  handleCurrentTaskChange: function (event, task) {
+    if (event == 'currentTaskChange') {
+      this.setState({ currentTaskId: task.id, currentTaskTitle: task.title });
+    }
+  },
+  render: function () {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'h1',
+        null,
+        this.state.currentTaskTitle
+      )
+    );
+  }
+});
+
+module.exports = Tasks;
+
+},{"../dataStores/tasks.jsx":192,"react":168,"reflux":184}],192:[function(require,module,exports){
 var HTTP = require('../services/http');
 var Reflux = require('reflux');
 var TaskActions = require('../actions/task.jsx');
@@ -21589,6 +21626,17 @@ var TaskStore = Reflux.createStore({
       this.getTasks();
     }.bind(this));
   },
+  selectTask: function (taskId) {
+    var selectedTask = {};
+    this.tasks.forEach(function (task) {
+      if (task.id == taskId) {
+        selectedTask = task;
+      }
+    });
+
+    this.currentTask = selectedTask;
+    this.fireCurrentTaskChange();
+  },
   deleteTask: function (taskId) {
     var newTasks = [];
     this.tasks.forEach(function (task) {
@@ -21602,22 +21650,32 @@ var TaskStore = Reflux.createStore({
     HTTP.delete('/tasks/' + taskId).then(function (response) {
       this.getTasks();
     }.bind(this));
+
+    if (taskId == this.currentTask.id) {
+      this.currentTask = {};
+      this.fireCurrentTaskChange();
+    }
   },
   fireUpdate: function () {
-    this.trigger('change', this.tasks);
+    this.trigger('coreChange', this.tasks);
+  },
+  fireCurrentTaskChange: function () {
+    this.trigger('currentTaskChange', this.currentTask);
   }
 });
 
 module.exports = TaskStore;
 
-},{"../actions/task.jsx":188,"../services/http":193,"reflux":184}],192:[function(require,module,exports){
+},{"../actions/task.jsx":188,"../services/http":194,"reflux":184}],193:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Tasks = require('./components/Tasks.jsx');
+var Timer = require('./components/Timer.jsx');
 
 ReactDOM.render(React.createElement(Tasks, null), document.getElementById('tasks'));
+ReactDOM.render(React.createElement(Timer, null), document.getElementById('timer'));
 
-},{"./components/Tasks.jsx":190,"react":168,"react-dom":30}],193:[function(require,module,exports){
+},{"./components/Tasks.jsx":190,"./components/Timer.jsx":191,"react":168,"react-dom":30}],194:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 var baseUrl = "http://localhost:3000";
 
@@ -21652,4 +21710,4 @@ var HTTP = {
 
 module.exports = HTTP;
 
-},{"whatwg-fetch":187}]},{},[192]);
+},{"whatwg-fetch":187}]},{},[193]);

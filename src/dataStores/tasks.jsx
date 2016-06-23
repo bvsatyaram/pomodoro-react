@@ -25,6 +25,17 @@ var TaskStore = Reflux.createStore({
       this.getTasks();
     }.bind(this));
   },
+  selectTask: function(taskId) {
+    var selectedTask = {};
+    this.tasks.forEach(function(task) {
+      if (task.id == taskId) {
+        selectedTask = task;
+      }
+    });
+
+    this.currentTask = selectedTask;
+    this.fireCurrentTaskChange();
+  },
   deleteTask: function(taskId) {
     var newTasks = [];
     this.tasks.forEach(function(task) {
@@ -38,9 +49,17 @@ var TaskStore = Reflux.createStore({
     HTTP.delete('/tasks/' + taskId).then(function(response) {
       this.getTasks();
     }.bind(this));
+
+    if (taskId == this.currentTask.id) {
+      this.currentTask = {};
+      this.fireCurrentTaskChange();
+    }
   },
   fireUpdate: function() {
-    this.trigger('change', this.tasks);
+    this.trigger('coreChange', this.tasks);
+  },
+  fireCurrentTaskChange: function() {
+    this.trigger('currentTaskChange', this.currentTask);
   }
 });
 

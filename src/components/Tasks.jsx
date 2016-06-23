@@ -14,7 +14,9 @@ var Tasks = React.createClass({
     TaskActions.getTasks();
   },
   handleTaskStoreChange: function(event, tasks) {
-    this.setState({tasks: tasks});
+    if (event == 'coreChange') {
+      this.setState({tasks: tasks});
+    }
   },
   handleNewTaskChange: function(e) {
     this.setState({newTaskTitle: e.target.value});
