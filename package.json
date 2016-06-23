@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "watchify src/main.jsx -v -t [babelify --presets [react] ] -o public/js/main.js",
+    "build-css": "node-sass --include-path src/scss src/scss/main.scss public/css/main.css",
+    "watch-css": "nodemon -e scss -x \"npm run build-css\"",
+    "watchify": "watchify src/main.jsx -v -t [babelify --presets [react] ] -o public/js/main.js",
+    "start": "npm run watchify & npm run watch-css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,8 +23,12 @@
   "dependencies": {
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.3.0",
+    "node-sass": "^3.8.0",
+    "nodemon": "^1.9.2",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "watchify": "^3.7.0"
+    "reflux": "^0.4.1",
+    "watchify": "^3.7.0",
+    "whatwg-fetch": "^1.0.0"
   }
 }
