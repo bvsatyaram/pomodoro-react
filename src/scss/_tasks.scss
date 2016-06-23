@@ -1,4 +1,8 @@
 #tasks {
+  border: 1px solid #bdc3c7;
+  background-color: #16a085;
+  padding: 0;
+
   .task {
     background-color: #ecf0f1;
     color: #95a5a6;
@@ -6,5 +10,33 @@
     font-size: 2em;
     font-weight: 300;
     border-bottom: 1px dotted #95a5a6;
+  }
+
+  form.new-task-form {
+    input, button {
+      border: none;
+      border-radius: 0;
+    }
+
+    .form-group {
+      width: 70%;
+
+      input {
+        width: 100%;
+        font-size: 2em;
+        height: 2em;
+        font-weight: 300;
+      }
+    }
+
+    button {
+      width: 30%;
+      font-size: 2em;
+      text-transform: uppercase;
+      font-weight: 300;
+      color: #ecf0f1;
+      background-color: #16a085;
+      height: 2em;
+    }
   }
 }

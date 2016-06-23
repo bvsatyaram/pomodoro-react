@@ -1,10 +1,32 @@
 body {
   font-family: 'Lato', sans-serif; }
 
-#tasks .task {
-  background-color: #ecf0f1;
-  color: #95a5a6;
-  padding: 0.5em 1em;
-  font-size: 2em;
-  font-weight: 300;
-  border-bottom: 1px dotted #95a5a6; }
+#tasks {
+  border: 1px solid #bdc3c7;
+  background-color: #16a085;
+  padding: 0; }
+  #tasks .task {
+    background-color: #ecf0f1;
+    color: #95a5a6;
+    padding: 0.5em 1em;
+    font-size: 2em;
+    font-weight: 300;
+    border-bottom: 1px dotted #95a5a6; }
+  #tasks form.new-task-form input, #tasks form.new-task-form button {
+    border: none;
+    border-radius: 0; }
+  #tasks form.new-task-form .form-group {
+    width: 70%; }
+    #tasks form.new-task-form .form-group input {
+      width: 100%;
+      font-size: 2em;
+      height: 2em;
+      font-weight: 300; }
+  #tasks form.new-task-form button {
+    width: 30%;
+    font-size: 2em;
+    text-transform: uppercase;
+    font-weight: 300;
+    color: #ecf0f1;
+    background-color: #16a085;
+    height: 2em; }
